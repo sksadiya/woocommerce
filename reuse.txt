@@ -1,0 +1,54 @@
+<?php
+get_header();
+
+// Display category filters
+$terms = get_terms('product_cat');
+
+if (!empty($terms)) {
+    echo '<div class="container my-4">';
+    echo '<ul class="nav nav-pills">';
+    foreach ($terms as $term) {
+        echo '<li class="nav-item">';
+        echo '<a class="nav-link" href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
+        echo '</li>';
+    }
+    echo '</ul>';
+    echo '</div>';
+}
+
+// Display products in a grid
+echo '<div class="container py-4">';
+echo '<div class="row g-4">'; // Use Bootstrap 5 grid classes
+
+if (have_posts()) {
+    while (have_posts()):
+        the_post(); ?>
+
+        <div class="col-md-4">
+            <div class="card">
+                <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'medium')) ?>" class="card-img-top"
+                    alt="' . esc_attr(get_the_title()) . '" loading="lazy">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="<?php echo esc_url(get_the_permalink()); ?>" class="text-dark text-decoration-none">
+                            <?php echo esc_html(get_the_title()); ?>
+                        </a>
+                    </h5>
+                    <p class="card-text">
+                        <?php echo esc_html(get_the_excerpt()); ?>
+                    </p>
+                    <a href="?add-to-cart=<?php echo esc_attr(get_the_ID()) ?>" class="btn btn-primary add-to-cart-button" data-product-id="<?php echo esc_attr(get_the_ID()); ?>">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+    <?php endwhile;
+} else {
+    echo '<p>No products found</p>';
+}
+
+echo '</div>';
+echo '</div>';
+
+get_footer();
+?>
